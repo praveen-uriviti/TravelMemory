@@ -1,0 +1,56 @@
+
+
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: "3001"
+      MONGO_URI: "mongodb://mongo:27017/travelmemory"
+    depends_on:
+      - mongo
+    mem_limit: 250m
+    networks:
+      - mernnetwork
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    mem_limit: 250m
+    cpus: 1.0
+    depends_on:
+      - backend
+    networks:
+      - mernnetwork
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27034:27017"
+    mem_limit: 250m
+    cpus: 1.0
+    volumes:
+      - mongodatavol:/data/db
+    networks:
+      - mernnetwork
+
+volumes:
+  mongodatavol:
+
+networks:
+  mernnetwork:
+    driver: bridge
+
+     
+
+
+
+
+
